@@ -1,4 +1,3 @@
-
 FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
@@ -14,11 +13,14 @@ FROM alpine:latest
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-USER appuser
+WORKDIR /home/appuser/app
+
+COPY --chown=appuser:appgroup .env .
 
 COPY --from=builder /go/bin/myapp /usr/local/bin/myapp
-COPY .env /usr/local/bin/.env
 
-EXPOSE 8080
+USER appuser
+
+EXPOSE 8810
 
 ENTRYPOINT ["myapp"]
